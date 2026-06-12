@@ -1,0 +1,31 @@
+# Keil MDK-ARM build outputs
+*.o
+*.crf
+*.d
+*.dep
+*.lst
+*.hex
+*.axf
+*.bin
+*.map
+*.htm
+*.build_log.htm
+*.iex
+*.tmp
+
+# Keil MDK-ARM project user settings (local paths)
+*.uvguix.*
+*.scvd
+
+# JLink / debugger logs
+JLinkLog.txt
+*.jlink
+
+# VS Code
+.vscode/keil-assistant.log
+.vscode/uv4.log
+.vscode/uv4.log.lock
+
+# OS files
+Thumbs.db
+Desktop.ini
