@@ -13,6 +13,10 @@
 *.iex
 *.tmp
 
+# Keil MDK-ARM build output directory
+MDK-ARM/complete_hero_chassis/
+MDK-ARM/RTE/
+
 # Keil MDK-ARM project user settings (local paths)
 *.uvguix.*
 *.scvd

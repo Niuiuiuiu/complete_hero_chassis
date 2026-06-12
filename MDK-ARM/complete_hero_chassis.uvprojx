@@ -604,6 +604,16 @@
               <FileType>5</FileType>
               <FilePath>..\drv\M3508.h</FilePath>
             </File>
+            <File>
+              <FileName>power_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\power_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>power_meter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\drv\power_meter.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

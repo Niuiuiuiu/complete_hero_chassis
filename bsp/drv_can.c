@@ -3,6 +3,7 @@
 #include "dm_motor.h"
 #include "control_dbus.h"
 #include "main.h"
+#include "power_meter.h"
 
 
 //extern CAN_HandleTypeDef hcan1;
@@ -136,6 +137,9 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
       break;
     case 0x144:
       Rx_process(&DM43404,Rx_data);
+      break;
+    case POWERMETER_CAN_RX_ID:
+      powMeter_data_handle(Rxheader.StdId, Rx_data);
       break;
 //    case 0x05:
 //      process_dbus_data(&dbuscontrol,Rx_data);

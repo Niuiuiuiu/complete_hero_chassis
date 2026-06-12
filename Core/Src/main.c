@@ -35,6 +35,7 @@
 #include "imu_data.h"
 #include "bsp_imu.h"
 #include "dm_joint_ctrl.h"
+#include "power_meter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,6 +65,7 @@ extern dbus_struct dbus_ctrl_data;
 extern trans_dbus_data dbuscontrol;
 extern condition_state condition_ctrler;
 float USART_I[8]={0};
+float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
 /* USER CODE END PV */
 
@@ -186,8 +188,8 @@ int main(void)
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
   CAN_Filter_Mask_Config(&hcan1,CAN_FILTER(13)|CAN_FIFO_0|CAN_STDID|CAN_DATA_TYPE,0x05,0x00);//需要根据电机id修改
-	CAN_Filter_Mask_Config(&hcan2,CAN_FILTER(14)|CAN_FIFO_1|CAN_STDID|CAN_DATA_TYPE,0x200,0x7F0);//需要根据电机id修改
-  CAN_Filter_Mask_Config(&hcan2,CAN_FILTER(15)|CAN_FIFO_1|CAN_STDID|CAN_DATA_TYPE,0x140,0x7F0);//需要根据电机id修改
+	CAN_Filter_Mask_Config(&hcan2,CAN_FILTER(14)|CAN_FIFO_1|CAN_STDID|CAN_DATA_TYPE,0x200,0x700);//需要根据电机id修改
+  CAN_Filter_Mask_Config(&hcan2,CAN_FILTER(15)|CAN_FIFO_1|CAN_STDID|CAN_DATA_TYPE,0x140,0x700);//需要根据电机id修改
 	
   HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);
 	HAL_CAN_ActivateNotification(&hcan2,CAN_IT_RX_FIFO1_MSG_PENDING);
@@ -217,9 +219,8 @@ int main(void)
         dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,0);
     }
     
-		USART_I[4]=imu_ctrler.pitch_error;
-		USART_I[5]=pitch_ctrl(&imu_ctrler);
-		HAL_UART_Transmit(&huart6, (uint8_t*)USART_I, sizeof(USART_I), HAL_MAX_DELAY);
+		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
+		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
 		HAL_Delay(1);
 		Temp_Control_Task(&imu1); 
