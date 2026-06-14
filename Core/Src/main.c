@@ -67,6 +67,7 @@ extern condition_state condition_ctrler;
 float USART_I[8]={0};
 float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
+uint8_t imu_ready=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -156,6 +157,8 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim14);
 	HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_10);
+
+  imu_ready = 1;
 	
 	dm_motor_init(&DM43401,12.5,10,18,50.0f,4.0f,0x01,0x141);    //达妙的MIT暂时给60 
   dm_motor_init(&DM43402,12.5,10,18,35.0f,4.0f,0x02,0x142);    //自己的MIT暂时给40 偏软
@@ -219,9 +222,9 @@ int main(void)
         dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,0);
     }
     
-		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
-		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
-		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
+//		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
+//		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
+//		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
 		HAL_Delay(1);
 		Temp_Control_Task(&imu1); 
     /* USER CODE END WHILE */
@@ -285,6 +288,7 @@ void SystemClock_Config(void)
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+  if(! imu_ready) return;
   if (GPIO_Pin == GPIO_PIN_4) {
 
     BMI088_Read_Acc_Raw(&imu1);
