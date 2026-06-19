@@ -153,15 +153,15 @@ void process_para(motor_para* pid,uint8_t* Rx_dataa)
  * @param 电机参数结构体指针
  * @return 无
  */
-void M3508_currentsend(CAN_HandleTypeDef*hcan,uint16_t sendID,float Limiting_Coefficient,calculate calfunction,motor_para* pid1,motor_para* pid2,motor_para* pid3,motor_para* pid4)
+void M3508_currentsend(CAN_HandleTypeDef*hcan,uint16_t sendID,calculate calfunction,motor_para* pid1,motor_para* pid2,motor_para* pid3,motor_para* pid4)
 {
     int16_t current[4];
     uint8_t Tx_data[8];
 
-    current[0]=(int16_t)calfunction(pid1)*Limiting_Coefficient;
-    current[1]=(int16_t)calfunction(pid2)*Limiting_Coefficient;
-    current[2]=(int16_t)calfunction(pid3)*Limiting_Coefficient;
-    current[3]=(int16_t)calfunction(pid4)*Limiting_Coefficient;
+    current[0]=calfunction(pid1);
+    current[1]=calfunction(pid2);
+    current[2]=calfunction(pid3);
+    current[3]=calfunction(pid4);
 
     Tx_data[0]=current[0]>>8;
     Tx_data[1]=current[0]&0x00ff;

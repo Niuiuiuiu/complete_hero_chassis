@@ -45,7 +45,7 @@ int16_t pid_calculate_v(motor_para* pid);
 int16_t pid_calculate_a(motor_para* pid);
 int16_t calculate_PID(motor_para* pid);
 void process_para(motor_para* pid,uint8_t* Rx_dataa);
-void M3508_currentsend(CAN_HandleTypeDef*hcan,uint16_t sendID,float Limiting_Coefficient,calculate calfunction,motor_para* pid1,motor_para* pid2,motor_para* pid3,motor_para* pid4);
+void M3508_currentsend(CAN_HandleTypeDef*hcan,uint16_t sendID,calculate calfunction,motor_para* pid1,motor_para* pid2,motor_para* pid3,motor_para* pid4);
 
 
 

@@ -36,7 +36,6 @@
 #include "bsp_imu.h"
 #include "dm_joint_ctrl.h"
 #include "power_meter.h"
-#include "power_ctrl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,8 +64,6 @@ extern dm_motor_para DM43401,DM43402,DM43403,DM43404;
 extern dbus_struct dbus_ctrl_data;
 extern trans_dbus_data dbuscontrol;
 extern condition_state condition_ctrler;
-extern powMeter_capacitorBank_t powMeter_capBank_info;
-extern power_ctrl power_ctrler;
 float USART_I[8]={0};
 float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
@@ -191,7 +188,6 @@ int main(void)
   imu_ctrler.kd_roll = 0.02f;  // 0.09f
 
   M3508_init(4.0f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
-  power_ctrl_init(&power_ctrler,100,&powMeter_capBank_info,0.2f,0.01f,0.0f);
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
   CAN_Filter_Mask_Config(&hcan1,CAN_FILTER(13)|CAN_FIFO_0|CAN_STDID|CAN_DATA_TYPE,0x05,0x00);//需要根据电机id修改
@@ -229,7 +225,7 @@ int main(void)
 //		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
 //		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
 //		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
-		HAL_Delay(50);
+		HAL_Delay(1);
 		Temp_Control_Task(&imu1); 
     /* USER CODE END WHILE */
 
@@ -326,7 +322,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				revive_motor(&hcan2,&DM43402);  
 			}
 			else{
-				M3508_currentsend(&hcan2,M3508_send_ID_5_8,power_output_clamp(&power_ctrler,power_ctrl_calc(&power_ctrler),0.3,1.0),calculate_PID,&M35085,&M35086,&M35087,&M35088);
+				M3508_currentsend(&hcan2,M3508_send_ID_5_8,calculate_PID,&M35085,&M35086,&M35087,&M35088);
 			}
     }
 		
@@ -347,7 +343,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         else if(DM43401.state==landing)
         {
           const_land_leg(&DM43401);
-					DM43403.P_des=-0.4f;
+					DM43403.P_des=-1.0f;
           DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
         }
         else if(DM43401.state==lift_b_leg)
@@ -375,7 +371,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
           DM43404.T_ff=MIT_calculate_T_ff(&DM43404,0.0f);
         }
 				else if(DM43404.state==landing){
-					DM43402.P_des=0.4f;
+					DM43402.P_des=1.0f;
           DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
           const_land_leg(&DM43404);
         }
