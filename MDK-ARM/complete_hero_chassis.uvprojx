@@ -649,6 +649,16 @@
               <FileType>5</FileType>
               <FilePath>..\app\imu_data.h</FilePath>
             </File>
+            <File>
+              <FileName>power_ctrl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\app\power_ctrl.h</FilePath>
+            </File>
+            <File>
+              <FileName>power_ctrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\power_ctrl.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
