@@ -2,9 +2,10 @@
 
 
 power_ctrl power_ctrler;
+power_model_t power_model;
 
 /**
- * @brief 初始化电源控制结构体
+ * @brief 初始化功率控制结构体
  * @param pwr_ctrl 电源控制结构体指针
  * @param power_limitied 电源限制值
  * @param pwr_info 电源信息结构体指针
@@ -27,7 +28,7 @@ void power_ctrl_init(power_ctrl *pwr_ctrl, float power_limitied, powMeter_capaci
 
 
 /**
- * @brief 计算电源控制输出
+ * @brief 计算功率控制输出
  * @param pwr_ctrl 电源控制结构体指针
  * @retval 电源控制输出
  */
@@ -54,6 +55,46 @@ float power_ctrl_calc(power_ctrl *pwr_ctrl){
  * @retval 限幅后的控制系数输出
  */
 float power_output_clamp(power_ctrl *pwr_ctrl, float power_output,float min,float max){
-    pwr_ctrl->power_limited_output+= power_output;
+    pwr_ctrl->power_limited_output= power_output;
     return pwr_ctrl->power_limited_output>max?max:pwr_ctrl->power_limited_output<min?min:pwr_ctrl->power_limited_output;
+}
+
+
+/**
+ * @brief 初始化功率模型
+ * @param pm_info 功率模型结构体指针
+ * @param pwr_info 功率信息结构体指针
+ * @param motor_info 电机信息结构体指针
+ * @retval 无
+ */
+void power_meter_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info){
+    pm_info->power=&pwr_info->P_x1W_chassis;
+    pm_info->speed_now=&motor_info->speed_now;
+    pm_info->current=&motor_info->current;
+}
+
+
+/**
+ * @brief 设置功率模型参数
+ * @param pm_info 功率模型结构体指针
+ * @param k 系数
+ * @retval 无
+ */
+void set_power_model_para(power_model_t* pm_info,float k_0,float k_1,float k_2,float k_3,float k_4,float k_5){
+    pm_info->k0=k_0;
+    pm_info->k1=k_1;
+    pm_info->k2=k_2;
+    pm_info->k3=k_3;
+    pm_info->k4=k_4;
+    pm_info->k5=k_5;
+}
+
+
+/**
+ * @brief 计算功率模型
+ * @param pm_info 功率模型结构体指针
+ * @retval 无
+ */
+void calc_power_model(power_model_t* pm_info){
+    pm_info->power_cal=pm_info->k0+pm_info->k1*(*pm_info->current)+pm_info->k2*(*pm_info->speed_now)+pm_info->k3*(*pm_info->speed_now)*(*pm_info->current)+pm_info->k4*(*pm_info->current)*(*pm_info->current)+pm_info->k5*(*pm_info->speed_now)*(*pm_info->speed_now);
 }
