@@ -183,19 +183,36 @@
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\complete_hero_chassis\../drv/dm_motor.c\DM43401.POS</ItemText>
+          <ItemText>\\complete_hero_chassis\../app/power_ctrl.c\power_ctrler.power_error</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\complete_hero_chassis\../app/power_ctrl.c\power_ctrler.power_error</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
           <ItemText>\\complete_hero_chassis\../app/power_ctrl.c\power_ctrler.power_limited_output</ItemText>
         </Ww>
       </WatchWindow1>
+      <WatchWindow2>
+        <Ww>
+          <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35085.v_error_sig,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35086.v_error_sig,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35087.v_error_sig,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35088.v_error_sig,0x0A</ItemText>
+        </Ww>
+      </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

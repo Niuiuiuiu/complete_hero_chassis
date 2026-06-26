@@ -191,8 +191,8 @@ int main(void)
 	imu_ctrler.ki_roll = 0.0f;   //0.22f
   imu_ctrler.kd_roll = 0.02f;  // 0.09f
 
-  M3508_init(4.0f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
-  power_ctrl_init(&power_ctrler,100,&powMeter_capBank_info,0.5f,0.01f,0.0f);
+  M3508_init(3.0f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
+  power_ctrl_init(&power_ctrler,70,&powMeter_capBank_info,0.25f,0.08f,0.0f);
   power_meter_init(&power_model,&powMeter_capBank_info,&M35085);
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
@@ -327,7 +327,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				revive_motor(&hcan2,&DM43404);
 				revive_motor(&hcan2,&DM43402);  
 			}
-			else{
+			else{                                       //                                            
 				M3508_currentsend(&hcan2,M3508_send_ID_5_8,power_output_clamp(&power_ctrler,power_ctrl_calc(&power_ctrler),0.0,1.0),calculate_PID,&M35085,&M35086,&M35087,&M35088);
 			}
     }

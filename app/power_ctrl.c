@@ -6,8 +6,8 @@ power_model_t power_model;
 
 /**
  * @brief 初始化功率控制结构体
- * @param pwr_ctrl 电源控制结构体指针
- * @param power_limitied 电源限制值
+ * @param pwr_ctrl 功率控制结构体指针
+ * @param power_limitied 功率限制值
  * @param pwr_info 电源信息结构体指针
  * @param p_kp 比例系数
  * @param p_ki 积分系数
@@ -55,8 +55,9 @@ float power_ctrl_calc(power_ctrl *pwr_ctrl){
  * @retval 限幅后的控制系数输出
  */
 float power_output_clamp(power_ctrl *pwr_ctrl, float power_output,float min,float max){
-    pwr_ctrl->power_limited_output= power_output;
-    return pwr_ctrl->power_limited_output>max?max:pwr_ctrl->power_limited_output<min?min:pwr_ctrl->power_limited_output;
+    pwr_ctrl->power_limited_output+= power_output;
+    pwr_ctrl->power_limited_output=pwr_ctrl->power_limited_output>max?max:pwr_ctrl->power_limited_output<min?min:pwr_ctrl->power_limited_output;
+    return pwr_ctrl->power_limited_output;
 }
 
 

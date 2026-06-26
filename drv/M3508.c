@@ -134,6 +134,7 @@ void process_para(motor_para* pid,uint8_t* Rx_dataa)
 
     pid->v_error=pid->tar_speed-pid->speed_now;
     pid->v_error_sig=pid->v_error_sig+pid->v_error;
+    pid->v_error_sig=pid->v_error_sig>170000?170000:pid->v_error_sig<-170000?-170000:pid->v_error_sig;
     pid->v_error_del=pid->v_error-pid->v_error_pre;
 
     pid->a_error=pid->tar_encode-pid->encode;
