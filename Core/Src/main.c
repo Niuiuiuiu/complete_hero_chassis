@@ -191,9 +191,9 @@ int main(void)
 	imu_ctrler.ki_roll = 0.0f;   //0.22f
   imu_ctrler.kd_roll = 0.02f;  // 0.09f
 
-  M3508_init(3.0f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
-  power_ctrl_init(&power_ctrler,70,&powMeter_capBank_info,0.25f,0.08f,0.0f);
-  power_meter_init(&power_model,&powMeter_capBank_info,&M35085);
+  M3508_init(2.8f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
+  power_ctrl_init(&power_ctrler,60,&powMeter_capBank_info,0.25f,0.09f,0.0f);
+  power_model_init(&power_model,&powMeter_capBank_info,&M35085);
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
   CAN_Filter_Mask_Config(&hcan1,CAN_FILTER(13)|CAN_FIFO_0|CAN_STDID|CAN_DATA_TYPE,0x05,0x00);//需要根据电机id修改

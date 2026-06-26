@@ -31,7 +31,7 @@ void power_ctrl_init(power_ctrl *pwr_ctrl, float power_limitied, powMeter_capaci
 float power_ctrl_calc(power_ctrl *pwr_ctrl);
 float power_output_clamp(power_ctrl *pwr_ctrl, float power_output,float min,float max);
 
-void power_meter_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info);
+void power_model_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info);
 void set_power_model_para(power_model_t* pm_info,float k_0,float k_1,float k_2,float k_3,float k_4,float k_5);
 void calc_power_model(power_model_t* pm_info);
 #endif /* __POWER_CTRL_H__ */

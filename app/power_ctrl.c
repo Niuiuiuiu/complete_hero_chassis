@@ -68,7 +68,7 @@ float power_output_clamp(power_ctrl *pwr_ctrl, float power_output,float min,floa
  * @param motor_info 电机信息结构体指针
  * @retval 无
  */
-void power_meter_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info){
+void power_model_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info){
     pm_info->power=&pwr_info->P_x1W_chassis;
     pm_info->speed_now=&motor_info->speed_now;
     pm_info->current=&motor_info->current;
