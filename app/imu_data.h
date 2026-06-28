@@ -23,4 +23,6 @@ void BMI088_Calibrate_Pose(BMI088_Handle_t *imu);
 
 void Mahony_Initial_Alignment(BMI088_Handle_t *imu);
 
+void BMI088_Full_Init(BMI088_Handle_t *imu);
+
 #endif //IMU_DATA_H

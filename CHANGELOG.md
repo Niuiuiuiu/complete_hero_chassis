@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.8 — 代码重构 & 加重功率测试 (2026-06-28)
+
+### 功率控制测试
+- **加重底盘全系统功率测试**: 底盘加装全部负载（M3508 轮速电机 + DM4340 关节电机），实测功率控制效果
+  - 稳定控制在 100W 以下，基本不超功率
+  - 机动性略微下降：猛推摇杆时功率削减介入更快更激进，加速感稍弱
+  - 权衡选择：优先保证功率安全，牺牲部分机动性
+
+### 重构
+- **回调函数集中管理** (`app/callback.c`)
+  - 所有 HAL `__weak` 回调统一迁移至 `callback.c`：`HAL_GPIO_EXTI_Callback`、`HAL_TIM_PeriodElapsedCallback`、`HAL_CAN_RxFifo0MsgPendingCallback`、`HAL_CAN_RxFifo1MsgPendingCallback`
+  - `main.c` 精简 176 行，`drv_can.c` 精简 90 行
+  - `drv_can.c` 专注 CAN 工具函数（发送、滤波配置）
+- **IMU 初始化封装**: `BMI088_Full_Init` 移入 `imu_data.c`
+  - 整合 `BMI088_Init`、`BMI088_Start`、零偏校准、Mahony 对准、`TIM14` 启动
+  - 回调用 `imu1.imu_ready` 取代全局 `imu_ready` 标志位
+
+---
+
 ## v0.7 — 全系统功率控制 (2026-06-27)
 
 ### 功率控制策略

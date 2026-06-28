@@ -78,6 +78,9 @@ typedef struct {
 	float integralFBx;
 	float integralFBy;
 	float integralFBz;
+
+    uint8_t imu_ready;
+
 } BMI088_Handle_t;
 
 void BMI088_Init(BMI088_Handle_t *imu_handle);

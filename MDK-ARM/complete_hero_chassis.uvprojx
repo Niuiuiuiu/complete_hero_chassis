@@ -659,6 +659,11 @@
               <FileType>1</FileType>
               <FilePath>..\app\power_ctrl.c</FilePath>
             </File>
+            <File>
+              <FileName>callback.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\callback.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

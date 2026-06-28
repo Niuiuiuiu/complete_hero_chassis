@@ -120,3 +120,47 @@ void Mahony_Initial_Alignment(BMI088_Handle_t *imu) {
     imu->integralFBz = 0.0f;
 }
 
+
+void BMI088_Full_Init(BMI088_Handle_t *imu) {
+  BMI088_Init(imu);
+  BMI088_Start(imu);
+  HAL_Delay(500);
+
+  HAL_TIM_Base_Start_IT(&htim10);
+  HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
+
+//  do {
+//    BMI088_Read_Temp(&imu1);
+//    Temp_Control_Task(&imu1);
+//    HAL_Delay(5);
+//  } while(imu1.temperature < 39.5f || imu1.temperature > 40.5f);
+
+//  HAL_Delay(1000);
+
+  BMI088_Read_Acc_Raw(imu);
+  BMI088_Read_Gyro_Raw(imu);
+  BMI088_Data_Convert(imu);
+
+  BMI088_Offset(imu);
+  Mahony_Initial_Alignment(imu);
+
+  for(int i = 0; i < 500; i++) {
+    BMI088_Read_Acc_Raw(imu);
+    BMI088_Read_Gyro_Raw(imu);
+    BMI088_Data_Convert(imu);
+    Mahony_Update(imu, 0.001f);
+
+    HAL_Delay(1);
+  }
+
+  Quaternion_To_Euler(imu);
+  BMI088_Calibrate_Pose(imu);
+
+  HAL_TIM_Base_Start_IT(&htim14);
+  HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_10);
+
+  imu->imu_ready = 1;
+
+}
+
+

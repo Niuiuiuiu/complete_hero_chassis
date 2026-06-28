@@ -20,9 +20,9 @@ void BMI088_Init(BMI088_Handle_t *imu_handle) {
     imu_handle->quat.q2 = 0.0f;
     imu_handle->quat.q3 = 0.0f;
 	
+    imu_handle->imu_ready = 0;
 
 }
-
 
 //void BMI088_Start(BMI088_Handle_t *imu_handle) {
 //    uint8_t dummy;
@@ -246,8 +246,5 @@ void Temp_Control_Task(BMI088_Handle_t *imu_handle) {
         __HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
     }
 }
-
-
-
 
 

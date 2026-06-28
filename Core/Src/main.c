@@ -71,7 +71,6 @@ extern power_model_t power_model;
 float USART_I[8]={0};
 float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
-uint8_t imu_ready=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,44 +124,7 @@ int main(void)
   MX_TIM14_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-  BMI088_Init(&imu1);
-  BMI088_Start(&imu1);
-  HAL_Delay(500);
-
-  HAL_TIM_Base_Start_IT(&htim10);
-  HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
-
-//  do {
-//    BMI088_Read_Temp(&imu1);
-//    Temp_Control_Task(&imu1);
-//    HAL_Delay(5);
-//  } while(imu1.temperature < 39.5f || imu1.temperature > 40.5f);
-
-//  HAL_Delay(1000);
-
-  BMI088_Read_Acc_Raw(&imu1);
-  BMI088_Read_Gyro_Raw(&imu1);
-  BMI088_Data_Convert(&imu1);
-
-  BMI088_Offset(&imu1);
-  Mahony_Initial_Alignment(&imu1);
-
-  for(int i = 0; i < 500; i++) {
-    BMI088_Read_Acc_Raw(&imu1);
-    BMI088_Read_Gyro_Raw(&imu1);
-    BMI088_Data_Convert(&imu1);
-    Mahony_Update(&imu1, 0.001f);
-
-    HAL_Delay(1);
-  }
-
-  Quaternion_To_Euler(&imu1);
-  BMI088_Calibrate_Pose(&imu1);
-
-  HAL_TIM_Base_Start_IT(&htim14);
-	HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_10);
-
-  imu_ready = 1;
+  BMI088_Full_Init(&imu1);
 	
 	dm_motor_init(&DM43401,12.5,10,18,50.0f,4.0f,0x01,0x141);    //达妙的MIT暂时给60 
   dm_motor_init(&DM43402,12.5,10,18,35.0f,4.0f,0x02,0x142);    //自己的MIT暂时给40 偏软
@@ -191,8 +153,8 @@ int main(void)
 	imu_ctrler.ki_roll = 0.0f;   //0.22f
   imu_ctrler.kd_roll = 0.02f;  // 0.09f
 
-  M3508_init(2.8f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
-  power_ctrl_init(&power_ctrler,60,&powMeter_capBank_info,0.25f,0.09f,0.0f);
+  M3508_init(2.7f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
+  power_ctrl_init(&power_ctrler,60,&powMeter_capBank_info,0.25f,0.11f,0.0f);
   power_model_init(&power_model,&powMeter_capBank_info,&M35085);
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
@@ -287,139 +249,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-/**
- * @brief 外部中断函数
- * @param GPIO引脚
- * @retval None
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if(! imu_ready) return;
-  if (GPIO_Pin == GPIO_PIN_4) {
 
-    BMI088_Read_Acc_Raw(&imu1);
-  }
-  else if (GPIO_Pin == GPIO_PIN_5) {
-
-    BMI088_Read_Gyro_Raw(&imu1);
-  }
-}
-
-
-/**
- * @brief 定时器中断回调函数
- * @param 定时器句柄
- * @retval None
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    
-		if (htim->Instance == TIM13) // 判断是否为 TIM13 的中断
-    {
-			static uint8_t count13=0;
-			if(count13>=100){count13=0;}
-			count13++;
-			if(count13%4==1){
-				revive_motor(&hcan2,&DM43401);
-				revive_motor(&hcan2,&DM43403); 
-			}
-			else if(count13%4==3){
-				revive_motor(&hcan2,&DM43404);
-				revive_motor(&hcan2,&DM43402);  
-			}
-			else{                                       //                                            
-				M3508_currentsend(&hcan2,M3508_send_ID_5_8,power_output_clamp(&power_ctrler,power_ctrl_calc(&power_ctrler),0.0,1.0),calculate_PID,&M35085,&M35086,&M35087,&M35088);
-			}
-    }
-		
-		if (htim->Instance == TIM12)
-		{
-			static uint8_t count=0;
-			if(count>100){count=0;}
-			if(count%2==1)
-			{
-
-				if(DM43401.state==lift_f_leg)
-        {
-          DM43401.P_des=1.8f;
-          DM43403.P_des=-1.5f;
-          DM43401.T_ff=MIT_calculate_T_ff(&DM43401,0.0f);          
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else if(DM43401.state==landing)
-        {
-          const_land_leg(&DM43401);
-					DM43403.P_des=-0.4f;
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else if(DM43401.state==lift_b_leg)
-        {
-          DM43403.P_des=-1.6f;
-          DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );          
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else{
-          DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );  //1  k_rol
-				  DM43403.T_ff=force_to_torque(&DM43403,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );  //-1  k_rol
-        }
-				MIT_senddata(&hcan2,&DM43401);    //pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler)
-				MIT_senddata(&hcan2,&DM43403);				
-				
-			}
-			else
-			{	
-
-				if(DM43404.state==lift_f_leg)
-        {
-          DM43402.P_des=1.5f;
-          DM43404.P_des=-1.8f;
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);          
-          DM43404.T_ff=MIT_calculate_T_ff(&DM43404,0.0f);
-        }
-				else if(DM43404.state==landing){
-					DM43402.P_des=0.4f;
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
-          const_land_leg(&DM43404);
-        }
-        else if(DM43404.state==lift_b_leg)
-        {
-          DM43402.P_des=1.6f;
-          DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );         
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
-        }
-				else{
-          DM43402.T_ff=force_to_torque(&DM43402,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) ); //-1 -1 1
-				  DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );   //-1 1 -1
-        }
-				MIT_senddata(&hcan2,&DM43402);       //-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler)
-				MIT_senddata(&hcan2,&DM43404);
-				
-			}
-			
-			count++;
-		}
-		if(htim->Instance == TIM14) {
-      static uint8_t count14=0;
-      if(count14>100){count14=0;}
-			__disable_irq();
-			BMI088_Data_Convert(&imu1);
-			__enable_irq();
-
-			Mahony_Update(&imu1, 0.001f);
-
-			Quaternion_To_Euler(&imu1);
-	  
-			BMI088_Read_Temp(&imu1);
-      if(count14%5==0){
-			  process_ctrl_para(&imu_ctrler,&imu1,&DM43401,&DM43402,&DM43403,&DM43404); //不是scp的库
-      }
-			USART_I[0] = imu1.temperature;
-			USART_I[1] = imu1.euler.pitch;
-			USART_I[2] = imu1.euler.yaw;
-			USART_I[3] = imu1.euler.roll;
-      count14++;
-    }
-}
 /* USER CODE END 4 */
 
 /**
