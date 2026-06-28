@@ -7,6 +7,15 @@
 #define M3508_send_ID_1_4 0x200
 #define M3508_send_ID_5_8 0x1FF
 
+typedef enum{
+    stop=0,
+    start_run=1,
+    running=2,
+    pause_running=3,
+    over_running=4,
+}motion_state;
+
+
 typedef struct 
 {
     float kpv;

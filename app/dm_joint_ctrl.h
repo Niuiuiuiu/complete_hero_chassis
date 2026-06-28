@@ -4,6 +4,7 @@
 #include "dm_motor.h"
 #include "control_dbus.h"
 #include "imu_data.h"
+#include "M3508.h"
 #include "main.h"
 
 
@@ -55,5 +56,6 @@ float roll_ctrl(joint_ctrl_para* ctrl_para);
 float force_to_torque(dm_motor_para* motor, float force);
 float height_ctrl(joint_ctrl_para* ctrl_para);
 void const_land_leg(dm_motor_para* motor);
+void motion_state_ctrl(joint_ctrl_para* ctrl_para,motion_state* motion,motor_para*M5, motor_para*M6, motor_para*M7, motor_para*M8);
 
 #endif // DM_JOINT_CTRL_H

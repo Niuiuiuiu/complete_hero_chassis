@@ -68,6 +68,7 @@ extern condition_state condition_ctrler;
 extern powMeter_capacitorBank_t powMeter_capBank_info;
 extern power_ctrl power_ctrler;
 extern power_model_t power_model;
+extern motion_state motion_ctrler;
 float USART_I[8]={0};
 float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
@@ -140,7 +141,7 @@ int main(void)
   motor_enable(&hcan2,&DM43403);
   motor_enable(&hcan2,&DM43404);
 	
-	imu_ctrler.tar_h = 0.76f; //dm
+	imu_ctrler.tar_h = 0.335f; //dm
 	imu_ctrler.tar_roll = 0.0f;
   imu_ctrler.tar_pitch = 0.0f;
 
@@ -189,7 +190,6 @@ int main(void)
     else{
         dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,0);
     }
-    
 		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
 		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);

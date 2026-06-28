@@ -21,6 +21,7 @@ extern condition_state condition_ctrler;
 extern powMeter_capacitorBank_t powMeter_capBank_info;
 extern power_ctrl power_ctrler;
 extern power_model_t power_model;
+extern motion_state motion_ctrler;
 extern float USART_I[8];
 
 
@@ -78,29 +79,29 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 
 				if(DM43401.state==lift_f_leg)
-        {
-          DM43401.P_des=1.8f;
-          DM43403.P_des=-1.5f;
-          DM43401.T_ff=MIT_calculate_T_ff(&DM43401,0.0f);          
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else if(DM43401.state==landing)
-        {
-          const_land_leg(&DM43401);
+                {
+                    DM43401.P_des=1.8f;
+                    DM43403.P_des=-1.5f;
+                    DM43401.T_ff=MIT_calculate_T_ff(&DM43401,0.0f);          
+                    DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
+                }
+                else if(DM43401.state==landing)
+                {
+                    const_land_leg(&DM43401);
 					DM43403.P_des=-0.4f;
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else if(DM43401.state==lift_b_leg)
-        {
-          DM43403.P_des=-1.6f;
-          DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );          
-          DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
-        }
-        else{
-          DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );  //1  k_rol
-				  DM43403.T_ff=force_to_torque(&DM43403,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );  //-1  k_rol
-        }
-				MIT_senddata(&hcan2,&DM43401);    //pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler)
+                    DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
+                }
+                else if(DM43401.state==lift_b_leg)
+                {
+                    DM43403.P_des=-1.6f;
+                    DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler) );          
+                    DM43403.T_ff=MIT_calculate_T_ff(&DM43403,0.0f);
+                }
+                else{                              //height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler)
+                    DM43401.T_ff=force_to_torque(&DM43401,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler));  //1  k_rol
+				    DM43403.T_ff=force_to_torque(&DM43403,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler));  //-1  k_rol
+                }                                 //height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)-roll_ctrl(&imu_ctrler)
+				MIT_senddata(&hcan2,&DM43401);   
 				MIT_senddata(&hcan2,&DM43403);				
 				
 			}
@@ -108,28 +109,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{	
 
 				if(DM43404.state==lift_f_leg)
-        {
-          DM43402.P_des=1.5f;
-          DM43404.P_des=-1.8f;
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);          
-          DM43404.T_ff=MIT_calculate_T_ff(&DM43404,0.0f);
-        }
+                {
+                    DM43402.P_des=1.5f;
+                    DM43404.P_des=-1.8f;
+                    DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);          
+                    DM43404.T_ff=MIT_calculate_T_ff(&DM43404,0.0f);
+                }
 				else if(DM43404.state==landing){
 					DM43402.P_des=0.4f;
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
-          const_land_leg(&DM43404);
-        }
-        else if(DM43404.state==lift_b_leg)
-        {
-          DM43402.P_des=1.6f;
-          DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );         
-          DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
-        }
-				else{
-          DM43402.T_ff=force_to_torque(&DM43402,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) ); //-1 -1 1
-				  DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );   //-1 1 -1
-        }
-				MIT_senddata(&hcan2,&DM43402);       //-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler)
+                    DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
+                    const_land_leg(&DM43404);
+                }
+                else if(DM43404.state==lift_b_leg)
+                {
+                    DM43402.P_des=1.6f;
+                    DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );         
+                    DM43402.T_ff=MIT_calculate_T_ff(&DM43402,0.0f);
+                }
+				else{                                  //height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) 
+                    DM43402.T_ff=force_to_torque(&DM43402,height_ctrl(&imu_ctrler)+pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) ); //-1 -1 1
+				    DM43404.T_ff=force_to_torque(&DM43404,height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler) );   //-1 1 -1
+                }                                     //height_ctrl(&imu_ctrler)-pitch_ctrl(&imu_ctrler)+roll_ctrl(&imu_ctrler)
+				MIT_senddata(&hcan2,&DM43402);       
 				MIT_senddata(&hcan2,&DM43404);
 				
 			}
@@ -137,8 +138,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			count++;
 		}
 		if(htim->Instance == TIM14) {
-      static uint8_t count14=0;
-      if(count14>100){count14=0;}
+            static uint8_t count14=0;
+            if(count14>100){count14=0;}
 			__disable_irq();
 			BMI088_Data_Convert(&imu1);
 			__enable_irq();
@@ -148,15 +149,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			Quaternion_To_Euler(&imu1);
 	  
 			BMI088_Read_Temp(&imu1);
-      if(count14%5==0){
+
+            
+            if(count14%5==0){
+              motion_state_ctrl(&imu_ctrler,&motion_ctrler,&M35085,&M35086,&M35087,&M35088);
 			  process_ctrl_para(&imu_ctrler,&imu1,&DM43401,&DM43402,&DM43403,&DM43404); //不是scp的库
-      }
+             }
+            
+             
 			USART_I[0] = imu1.temperature;
 			USART_I[1] = imu1.euler.pitch;
 			USART_I[2] = imu1.euler.yaw;
 			USART_I[3] = imu1.euler.roll;
-      count14++;
-    }
+            count14++;
+        }
 }
 
 

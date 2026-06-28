@@ -86,7 +86,7 @@ float force_to_torque(dm_motor_para* motor, float force)
         force=force*limi_factor;
     }
     sin_clamp=fabs(sin(motor->POS))<0.38f?(sin(motor->POS)>0?0.38f:-0.38f):sin(motor->POS);
-    output=force*LENGTH_ARM/sin_clamp*-1.0f;
+    output=force*LENGTH_ARM/sin_clamp*(-1.0f);
 	if(output>motor->TMAX){output=motor->TMAX;}
 	if(output<-motor->TMAX){output=-motor->TMAX;}
     return output;
@@ -114,4 +114,45 @@ void const_land_leg(dm_motor_para* motor)
         motor->land_count=1;
         motor->state=normal;
     }
+}
+
+
+/**
+ * @brief 机器人关节状态控制(关节状态随运动状态控制)
+ * @param ctrl_para 控制参数结构体指针
+ * @param motion 机器人运动状态枚举指针
+ * @param motor 电机参数结构体指针
+ * @return 无
+ * */
+void motion_state_ctrl(joint_ctrl_para* ctrl_para,motion_state* motion,motor_para*M5, motor_para*M6, motor_para*M7, motor_para*M8){
+    static float stop_time=0;
+    static motion_state last_motion=0;
+    static uint8_t srcount=0,orcount=0;
+    last_motion=*motion;
+    switch(*motion){
+    case stop:
+         ctrl_para->tar_h=0.335f;
+         break;
+    case start_run:
+        srcount++;
+        ctrl_para->tar_h+=0.0034f;
+        if(ctrl_para->tar_h>=0.76f){*motion=running;srcount=0;}
+        break;
+    case running:
+         ctrl_para->tar_h=0.76f;
+         break;
+    case pause_running:
+         ctrl_para->tar_h=0.76f;
+         break;
+    case over_running:
+        orcount++;
+        ctrl_para->tar_h-=0.0034f;
+        if(ctrl_para->tar_h<=0.35f){*motion=stop;orcount=0;}
+        break;
+    }
+    if(last_motion==0&&(M5->tar_speed||M6->tar_speed||M7->tar_speed||M8->tar_speed)){*motion=start_run;}
+    if(*motion==running&&(M5->tar_speed==0&&M6->tar_speed==0&&M7->tar_speed==0&&M8->tar_speed==0)){*motion=pause_running;stop_time=(float)(HAL_GetTick()/1000.0f);}
+    if(last_motion==pause_running&&(M5->tar_speed||M6->tar_speed||M7->tar_speed||M8->tar_speed)){*motion=running;}
+    if(*motion==pause_running&&(M5->tar_speed==0&&M6->tar_speed==0&&M7->tar_speed==0&&M8->tar_speed==0)&&(float)(HAL_GetTick()/1000.0f)-stop_time>30.0f){*motion=over_running;}
+    
 }

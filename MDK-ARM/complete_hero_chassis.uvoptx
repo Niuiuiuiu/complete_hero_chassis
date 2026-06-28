@@ -190,6 +190,16 @@
           <WinNumber>1</WinNumber>
           <ItemText>\\complete_hero_chassis\../app/power_ctrl.c\power_ctrler.power_limited_output</ItemText>
         </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\complete_hero_chassis\../app/dm_joint_ctrl.c\imu_ctrler.h_now</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\motion_ctrler</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -211,6 +221,46 @@
           <count>3</count>
           <WinNumber>2</WinNumber>
           <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35088.v_error_sig,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/dm_motor.c\DM43401.POS</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/dm_motor.c\DM43402.POS</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/dm_motor.c\DM43403.POS</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/dm_motor.c\DM43404.POS</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35085.tar_speed,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35086.tar_speed,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35087.tar_speed,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\complete_hero_chassis\../drv/M3508.c\M35088.tar_speed,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

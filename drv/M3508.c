@@ -5,6 +5,7 @@
 extern CAN_HandleTypeDef hcan2;
 
 motor_para M35085,M35086,M35087,M35088;
+motion_state motion_ctrler={0};
 
 /**
  * @brief M3508电机参数初始化
