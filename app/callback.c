@@ -66,7 +66,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				revive_motor(&hcan2,&DM43404);
 				revive_motor(&hcan2,&DM43402);  
 			}
-			else{                                       //                                            
+			else{                                       //power_output_clamp(&power_ctrler,power_ctrl_calc(&power_ctrler),0.0,1.0)                                            
 				M3508_currentsend(&hcan2,M3508_send_ID_5_8,power_output_clamp(&power_ctrler,power_ctrl_calc(&power_ctrler),0.0,1.0),calculate_PID,&M35085,&M35086,&M35087,&M35088);
 			}
     }
@@ -156,7 +156,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			  process_ctrl_para(&imu_ctrler,&imu1,&DM43401,&DM43402,&DM43403,&DM43404); //不是scp的库
              }
             
-             
+
 			USART_I[0] = imu1.temperature;
 			USART_I[1] = imu1.euler.pitch;
 			USART_I[2] = imu1.euler.yaw;

@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.10 — 固件模式选择 & 功率模型数据采集 (2026-06-30)
+
+### 新增
+- **固件模式选择宏** (`main.h`)
+  - `CHASSIS_FOLLOW_GIMBAL`: 完整版（IMU + 云台跟随 + 主动悬挂）
+  - `CHASSIS_ONLY`: 纯底盘版（CAN DBUS 直读，不跟随云台）
+  - `GIMBAL_ONLY`: 预留，待开发
+  - 通过 `MODE_CHOICE` 宏切换，`main.c` / `stm32f4xx_it.c` 中 `#if` 条件编译
+- **`CHASSIS_ONLY` 模式**: USART3 UART 中断接收 DBUS 数据 (`dbus_callback`)，主循环直接解析遥控通道
+- **功率模型数据采集**: 串口新增 `power_send[1]=M35085.current`, `power_send[2]=M35085.speed_now`
+  - 配合功率计数据，VOFA 录波后可用于最小二乘多项式拟合
+- **LKM 电机驱动框架** (`drv/LKM_Motor.c/.h`): 预留接口
+
+### 变更
+- 宏定义从 `main.c` 移至 `main.h`，`stm32f4xx_it.c` 可共享
+- `CHASSIS_FOLLOW_GIMBAL` 分支用 `#if` 包裹，与 `CHASSIS_ONLY` 互斥编译
+- 注释更新: `motion_state_ctrl` 改为"机器人整体起落控制"
+
+---
+
 ## v0.9 — 运动状态联动高度控制 (2026-06-28)
 
 ### 新增

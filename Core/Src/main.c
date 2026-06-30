@@ -168,7 +168,10 @@ int main(void)
 	
   HAL_CAN_Start(&hcan1);
   HAL_CAN_Start(&hcan2);
-	//dbus_init(&huart3, &hdma_usart3_rx);
+
+#if MODE_CHOICE == CHASSIS_ONLY
+	dbus_init(&huart3, &hdma_usart3_rx);
+#endif
 	
 	__HAL_TIM_SET_COUNTER(&htim13, 1250);
 
@@ -183,6 +186,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+  #if MODE_CHOICE == CHASSIS_FOLLOW_GIMBAL
     trans_dbus(dbuscontrol.raw_ch[3],dbuscontrol.raw_ch[2],dbuscontrol.raw_ch[0],&dbuscontrol);
     if(condition_ctrler==follow_gimbal){
         dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,follow_gimbal_ctrl(&dbuscontrol,&imu1));
@@ -190,7 +194,16 @@ int main(void)
     else{
         dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,0);
     }
+  #endif
+  
+  #if MODE_CHOICE == CHASSIS_ONLY
+    trans_dbus(dbus_ctrl_data.channel.CH[3],dbus_ctrl_data.channel.CH[2],dbus_ctrl_data.channel.CH[0],&dbuscontrol);
+    dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,dbuscontrol.ch[0]);
+  #endif
+
 		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
+		power_send[1]=M35085.current;
+		power_send[2]=M35085.speed_now;
 		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
 		HAL_Delay(25);

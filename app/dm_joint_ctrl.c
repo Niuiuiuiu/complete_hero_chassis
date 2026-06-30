@@ -118,7 +118,7 @@ void const_land_leg(dm_motor_para* motor)
 
 
 /**
- * @brief 机器人关节状态控制(关节状态随运动状态控制)
+ * @brief 机器人整体起落控制(关节状态随运动状态控制)
  * @param ctrl_para 控制参数结构体指针
  * @param motion 机器人运动状态枚举指针
  * @param motor 电机参数结构体指针

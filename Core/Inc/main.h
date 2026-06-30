@@ -59,7 +59,13 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-
+//   定义固件类型
+#define CHASSIS_FOLLOW_GIMBAL (0)
+#define CHASSIS_ONLY          (1)
+#define GIMBAL_ONLY           (2)       //待开发
+//=================当前固件类型=================
+#define MODE_CHOICE (CHASSIS_FOLLOW_GIMBAL)
+//================================================
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
