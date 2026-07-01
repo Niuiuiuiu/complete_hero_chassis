@@ -30,9 +30,9 @@
 #define CAN_REMOTE_TYPE (1 << 0)
 
 
-void CAN_Send_Data(CAN_HandleTypeDef *hcan,uint16_t ID,const uint8_t aData[],uint16_t length);
+HAL_StatusTypeDef CAN_Send_Data(CAN_HandleTypeDef *hcan,uint16_t ID,const uint8_t aData[],uint16_t length);
 void CAN_Filter_Mask_Config(CAN_HandleTypeDef *hcan, uint8_t Object_Para, uint32_t ID, uint32_t Mask_ID);
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan);
+
 
 
 

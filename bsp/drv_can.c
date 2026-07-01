@@ -23,7 +23,7 @@ extern condition_state condition_ctrler;
  * @param 发送的数据
  * @param 数据位数
  */
-void CAN_Send_Data(CAN_HandleTypeDef *hcan,uint16_t ID,const uint8_t aData[],uint16_t length)
+HAL_StatusTypeDef CAN_Send_Data(CAN_HandleTypeDef *hcan,uint16_t ID,const uint8_t aData[],uint16_t length)
 {
 	
 	CAN_TxHeaderTypeDef tx_header;
@@ -37,7 +37,7 @@ void CAN_Send_Data(CAN_HandleTypeDef *hcan,uint16_t ID,const uint8_t aData[],uin
 //	if(timeout)
 //	{
 		uint32_t mailbox;
-		HAL_CAN_AddTxMessage(hcan,&tx_header,aData,&mailbox);
+	return HAL_CAN_AddTxMessage(hcan,&tx_header,aData,&mailbox);
 //	}
 
 }

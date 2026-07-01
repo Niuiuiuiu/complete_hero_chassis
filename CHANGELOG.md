@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.11 — 领控 LKM 电机驱动库 (2026-07-01)
+
+### 新增
+- **领控 LKM 电机 CAN 驱动** (`drv/LKM_Motor.c/.h`)
+  - 完整实现瓴控科技 CAN 协议 V2.36，地址 `0x140+ID`
+  - `LKM_Motor` 结构体：ID、温度、母线电压/电流、转矩电流、转速、编码器
+  - `order_t` 枚举：0x9A 状态1, 0x9C 状态2, 0x80 关闭, 0x88 开启, 0x81 停止, 0x07 重启
+  - `errorState_t` 联合体：位域 (`low_vol`/`high_vol`/`over_temp` 等 8 个标志) + `raw` 字节
+  - `motorState_t` 枚举：`on=0x00` / `off=0x10`
+  - 状态查询：`read_motorstate1` (0x9A, 温度/电压/电流/状态/错误)、`read_motorstate2` (0x9C, 温度/转矩/转速/编码器)
+  - `LKM_motor_send_current` (0xA1)：力矩电流控制，iqControl → DATA[4-5]，范围 -2048~2048
+  - `LKM_choose_procession`：根据返回命令字节自动分发到对应解析函数
+  - 控制指令：`motor_on`/`motor_off`/`motor_stop`/`motor_restart`/`send_motor_order`
+
+### 变更
+- **`drv_can`**: `CAN_Send_Data` 返回类型 `void` → `HAL_StatusTypeDef`，返回发送状态码
+  - 移除 `drv_can.h` 中过时的 `HAL_CAN_RxFifo1MsgPendingCallback` 声明
+
+---
+
 ## v0.10 — 固件模式选择 & 功率模型数据采集 (2026-06-30)
 
 ### 新增
