@@ -81,7 +81,7 @@ void power_model_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,
  * @param k 系数
  * @retval 无
  */
-void set_power_model_para(power_model_t* pm_info,float k_0,float k_1,float k_2,float k_3,float k_4,float k_5){
+void set_power_model_para(power_model_t* pm_info,double k_0,double k_1,double k_2,double k_3,double k_4,double k_5){
     pm_info->k0=k_0;
     pm_info->k1=k_1;
     pm_info->k2=k_2;
@@ -96,6 +96,8 @@ void set_power_model_para(power_model_t* pm_info,float k_0,float k_1,float k_2,f
  * @param pm_info 功率模型结构体指针
  * @retval 无
  */
-void calc_power_model(power_model_t* pm_info){
-    pm_info->power_cal=pm_info->k0+pm_info->k1*(*pm_info->current)+pm_info->k2*(*pm_info->speed_now)+pm_info->k3*(*pm_info->speed_now)*(*pm_info->current)+pm_info->k4*(*pm_info->current)*(*pm_info->current)+pm_info->k5*(*pm_info->speed_now)*(*pm_info->speed_now);
+float calc_power_model(power_model_t* pm_info){
+    pm_info->power_cal=pm_info->k0+pm_info->k1*(*pm_info->current)+pm_info->k2*(*pm_info->speed_now)+pm_info->k3*(*pm_info->speed_now)*(*pm_info->current)
+    +pm_info->k4*(*pm_info->current)*(*pm_info->current)+pm_info->k5*(*pm_info->speed_now)*(*pm_info->speed_now);
+    return pm_info->power_cal;
 }

@@ -6,7 +6,7 @@
 #include "main.h"
 
 typedef struct{
-    float k0,k1,k2,k3,k4,k5;//功率建模系数
+    double k0,k1,k2,k3,k4,k5;//功率建模系数
     float* power;//真实功率
     int16_t* speed_now;//当前转速
     int16_t* current;//电流
@@ -32,6 +32,6 @@ float power_ctrl_calc(power_ctrl *pwr_ctrl);
 float power_output_clamp(power_ctrl *pwr_ctrl, float power_output,float min,float max);
 
 void power_model_init(power_model_t* pm_info,powMeter_capacitorBank_t* pwr_info,motor_para* motor_info);
-void set_power_model_para(power_model_t* pm_info,float k_0,float k_1,float k_2,float k_3,float k_4,float k_5);
-void calc_power_model(power_model_t* pm_info);
+void set_power_model_para(power_model_t* pm_info,double k_0,double k_1,double k_2,double k_3,double k_4,double k_5);
+float calc_power_model(power_model_t* pm_info);
 #endif /* __POWER_CTRL_H__ */

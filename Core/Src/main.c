@@ -154,9 +154,11 @@ int main(void)
 	imu_ctrler.ki_roll = 0.0f;   //0.22f
   imu_ctrler.kd_roll = 0.02f;  // 0.09f
 
-  M3508_init(2.7f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
-  power_ctrl_init(&power_ctrler,60,&powMeter_capBank_info,0.25f,0.11f,0.0f);
+  M3508_init(2.8f,0.1f,0.02f,&M35085,&M35086,&M35087,&M35088);
+  power_ctrl_init(&power_ctrler,70,&powMeter_capBank_info,0.25f,0.08f,0.0f);
   power_model_init(&power_model,&powMeter_capBank_info,&M35085);
+  set_power_model_para(&power_model, 1.7936448373, 6.8421681946e-04, -4.1929843501e-05,
+  5.9043844076e-07, 2.7316097511e-07, 2.8504011479e-07);
   dbusctrl_init(&dbuscontrol,0.2f,0.4f);
  
   CAN_Filter_Mask_Config(&hcan1,CAN_FILTER(13)|CAN_FIFO_0|CAN_STDID|CAN_DATA_TYPE,0x05,0x00);//需要根据电机id修改
@@ -202,8 +204,9 @@ int main(void)
   #endif
 
 		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
-		power_send[1]=M35085.current;
-		power_send[2]=M35085.speed_now;
+		power_send[1]=calc_power_model(&power_model);
+		//power_send[1]=M35085.current;
+		//power_send[2]=M35085.speed_now;
 		HAL_UART_Transmit(&huart6, (uint8_t*)power_send, sizeof(power_send), HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart6, tail, 4, HAL_MAX_DELAY);
 		HAL_Delay(25);

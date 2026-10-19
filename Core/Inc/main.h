@@ -64,7 +64,7 @@ void Error_Handler(void);
 #define CHASSIS_ONLY          (1)
 #define GIMBAL_ONLY           (2)       //待开发
 //=================当前固件类型=================
-#define MODE_CHOICE (CHASSIS_FOLLOW_GIMBAL)
+#define MODE_CHOICE (CHASSIS_ONLY)
 //================================================
 /* USER CODE END Private defines */
 
