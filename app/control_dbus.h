@@ -44,7 +44,8 @@ typedef struct
 }trans_dbus_data;
 
 void dbusctrl_init(trans_dbus_data* dbuscontrol,float kp,float kd);
-void trans_dbus(int16_t xx,int16_t yy,int16_t rr,trans_dbus_data* dbusdata);
+void trans_dbus(int16_t xx,int16_t yy,int16_t rr,uint8_t s1,
+trans_dbus_data* dbusdata,dm_motor_para* motor1,dm_motor_para* motor3 );
 void dbus_Mec_process(trans_dbus_data* dbusdata,motor_para* pid1,motor_para* pid2,motor_para* pid3,motor_para* pid4,int16_t output);
 int16_t follow_gimbal_ctrl(trans_dbus_data* dbusdata,BMI088_Handle_t* imu);
 void can_send_dbusdata(trans_dbus_data* dbusdata);

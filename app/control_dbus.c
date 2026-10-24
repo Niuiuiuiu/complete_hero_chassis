@@ -36,8 +36,11 @@ void dbusctrl_init(trans_dbus_data* dbuscontrol,float kp,float kd)
  * @param 遥控器控制数据结构体
  * @return 无
  */
-void trans_dbus(int16_t xx,int16_t yy,int16_t rr,trans_dbus_data* dbusdata)
+void trans_dbus(int16_t xx,int16_t yy,int16_t rr,uint8_t s1,
+trans_dbus_data* dbusdata,dm_motor_para* motor1,dm_motor_para* motor3 )
 {
+    static uint8_t prev_s1=3;
+
 	dbusdata->ch[3]=9.0909*xx-9309.09; //标准
 	dbusdata->ch[2]=9.0909*yy-9309.09;	
     dbusdata->ch[0]=9.0909*rr-9309.09;
@@ -50,6 +53,21 @@ void trans_dbus(int16_t xx,int16_t yy,int16_t rr,trans_dbus_data* dbusdata)
     if(dbusdata->ch[3]<-6000){dbusdata->ch[3]=-6000;}
     if(dbusdata->ch[2]>6000){dbusdata->ch[2]=6000;}
     if(dbusdata->ch[2]<-6000){dbusdata->ch[2]=-6000;}
+
+    if(prev_s1==1 && s1==3){
+        motor1->state=landing;
+        motor3->state=landing;
+    }
+    if(motor1->state!=landing){
+        motor1->state = (robo_state)(s1);
+    }
+    if(motor3->state!=landing){
+        motor3->state = (robo_state)(s1);
+    }
+
+    prev_s1 = (uint8_t)(s1);
+
+
 }
 
 

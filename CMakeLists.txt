@@ -32,7 +32,15 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 enable_language(C ASM)
 
 # Create an executable object type
-add_executable(${CMAKE_PROJECT_NAME})
+add_executable(${CMAKE_PROJECT_NAME}
+        drv/mlx90640/functions/MLX90640_API.c
+        drv/mlx90640/headers/MLX90640_API.h
+        drv/mlx90640/headers/MLX90640_I2C_Driver.h
+        drv/mlx90640/functions/MLX90640_I2C_Driver.c
+        app/MLX90640_APP.c
+        app/MLX90640_APP.h
+        drv/vofa.c
+        drv/vofa.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
@@ -65,6 +73,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/app
     ${CMAKE_CURRENT_SOURCE_DIR}/bsp
     ${CMAKE_CURRENT_SOURCE_DIR}/drv
+    ${CMAKE_CURRENT_SOURCE_DIR}/drv/mlx90640/headers
 )
 
 # Add project symbols (macros)

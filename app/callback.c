@@ -8,6 +8,7 @@
 #include "dm_joint_ctrl.h"
 #include "power_meter.h"
 #include "power_ctrl.h"
+#include "MLX90640_APP.h"
 #include "can.h"
 #include "main.h"
 

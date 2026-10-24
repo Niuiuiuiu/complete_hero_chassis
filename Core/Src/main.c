@@ -20,6 +20,7 @@
 #include "main.h"
 #include "can.h"
 #include "dma.h"
+#include "i2c.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -37,6 +38,8 @@
 #include "dm_joint_ctrl.h"
 #include "power_meter.h"
 #include "power_ctrl.h"
+#include "MLX90640_APP.h"
+#include "vofa.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,6 +75,8 @@ extern motion_state motion_ctrler;
 float USART_I[8]={0};
 float power_send[3] = {0};
 uint8_t tail[4] = {0x00, 0x00, 0x80, 0x7f};
+extern float imageData[768];
+int result[2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -124,7 +129,12 @@ int main(void)
   MX_TIM13_Init();
   MX_TIM14_Init();
   MX_USART6_UART_Init();
+  MX_I2C2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
+    result[0] = MLX90640_APP_Init();//mlx90640初始化
+
   BMI088_Full_Init(&imu1);
 	
 	dm_motor_init(&DM43401,12.5,10,18,50.0f,4.0f,0x01,0x141);    //达妙的MIT暂时给60 
@@ -181,7 +191,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim13);
 	HAL_TIM_Base_Start_IT(&htim12);
 
-
+    //result  = MLX90640_I2CRead(0x33,0x800D,1,&test_data);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -199,9 +209,12 @@ int main(void)
   #endif
   
   #if MODE_CHOICE == CHASSIS_ONLY
-    trans_dbus(dbus_ctrl_data.channel.CH[3],dbus_ctrl_data.channel.CH[2],dbus_ctrl_data.channel.CH[0],&dbuscontrol);
+    trans_dbus(dbus_ctrl_data.channel.CH[3],dbus_ctrl_data.channel.CH[2],dbus_ctrl_data.channel.CH[0],
+        dbus_ctrl_data.channel.s1,&dbuscontrol,&DM43401,&DM43404);
     dbus_Mec_process(&dbuscontrol,&M35085,&M35086,&M35087,&M35088,dbuscontrol.ch[0]);
   #endif
+
+  result[1] = MLX90640_APP_Task();
 
 		power_send[0]=powMeter_capBank_info.P_x1W_chassis;
 		power_send[1]=calc_power_model(&power_model);
